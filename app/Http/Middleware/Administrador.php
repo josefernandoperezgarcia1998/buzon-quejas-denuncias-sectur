@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Administrador
 {
@@ -16,6 +17,9 @@ class Administrador
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        if (Auth::check() && Auth::user()->estado == 'Si' && Auth::user()->rol == 'Administrador') {
+            return $next($request);
+        }
+        return response()->view('errors.401', [], 401);
     }
 }

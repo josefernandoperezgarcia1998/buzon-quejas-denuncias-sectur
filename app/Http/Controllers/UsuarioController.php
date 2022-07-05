@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Usuario;
-use App\Http\Requests\StoreUsuarioRequest;
-use App\Http\Requests\UpdateUsuarioRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
 
 class UsuarioController extends Controller
 {
@@ -15,7 +20,7 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        //
+        return view('user.index');
     }
 
     /**
@@ -25,7 +30,7 @@ class UsuarioController extends Controller
      */
     public function create()
     {
-        //
+        return view('user.create');
     }
 
     /**
@@ -34,9 +39,42 @@ class UsuarioController extends Controller
      * @param  \App\Http\Requests\StoreUsuarioRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreUsuarioRequest $request)
+    public function store(Request $request)
     {
-        //
+        $valores = $request->all();
+
+        /* Reglas de validación del request */
+        $validation = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'min:8'],
+            'password2' => ['required', 'min:8'],
+            'estado' => ['required'],
+            'rol' => ['required'],
+        ]);
+
+        /* Fallo en caso de que las reglas de validación fallen */
+        if ($validation->fails()) {
+            return redirect()->back()->with('error','Por favor complete bien los campos')->withInput()->withErrors($validation);
+        }
+
+        /* Msj de error si el usuario es sonso y no hace caso al ajax :v que ya está en uso el correo */
+        if (User::where('email', $valores['email'])->exists()) {
+            return redirect()->back()->with('error','Correo electrónico ya existente, escoja otro')->withInput();
+        }
+
+        /* Mensaje de error si la contraseña no está bien confirmada */
+        if ($valores['password']!=$valores['password2'])
+            return redirect()->back()->with('error','Contraseñas no coinciden')->withInput();
+        
+        /*Se hashea la contraseña */
+        $valores['password'] = Hash::make( $valores['password'] );
+
+        /* Se llena el modelo con los datos en caso de que todo esté correcto */
+        $registro = new User();
+        $registro->fill($valores);
+        $registro->save();
+        return redirect()->route('users.index')->with('success', 'Usuario creado correctamente');
     }
 
     /**
@@ -45,7 +83,7 @@ class UsuarioController extends Controller
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function show(Usuario $usuario)
+    public function show(User $user)
     {
         //
     }
@@ -56,9 +94,10 @@ class UsuarioController extends Controller
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function edit(Usuario $usuario)
+    public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -68,9 +107,64 @@ class UsuarioController extends Controller
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUsuarioRequest $request, Usuario $usuario)
+    public function update(Request $request, $id)
     {
-        //
+        
+        $valores = $request->all();
+
+        /* 
+        Verificación si el input password2 está definida y es NULL
+        En otras palabras, que el password2 tenga un valor y el input de password también
+        Si llega con datos entra al if y verifica si la pass1 diferente al pass 2
+        Si son diferentes tira error ( aL NO SER IGUALES)
+        Si son iguales, continua el proceso
+        */
+        if(isset($valores['password2'])){
+            $validation_pasword2 = Validator::make($request->all(), [
+                'password' => ['required', 'min:8'],
+                'password2' => ['required', 'min:8'],
+            ]);
+
+            /* Error en el caso que el usuario no haga bien el input de password2 */
+            if ($validation_pasword2->fails()) {
+                return redirect()->back()->with('error','Error en el campo confirmar contraseña, vuelve a intentarlo ');
+            }
+
+            if ($valores['password']!=$valores['password2']){
+                return redirect()->back()->with('error','Contraseñas no coinciden');
+            }
+        }
+
+        /* 
+        Verificación si el input password está vacío
+        */
+        if(!isset($valores['password'])){
+            
+            //si el password esta en blanco no lo actualizaremos
+            if( is_null($valores['password']))
+            {
+                unset($valores['password']);
+            }
+        }
+        else{
+            $validation_paswords = Validator::make($request->all(), [
+                'password' => ['required', 'min:8'],
+                'password2' => ['required', 'min:8'],
+            ]);
+
+            /* Error en el caso de que el usuario solamente escriba en el campo password y no en el password2*/
+            if ($validation_paswords->fails()) {
+                return redirect()->back()->with('error','Error al cambiar la contraseña, vuelve a intentarlo');
+            }
+
+            $valores['password'] = Hash::make( $valores['password'] );
+        }
+
+        $registro = User::find($id);
+        $registro->fill($valores);
+        $registro->save();
+
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente');
     }
 
     /**
@@ -79,8 +173,18 @@ class UsuarioController extends Controller
      * @param  \App\Models\Usuario  $usuario
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Usuario $usuario)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        return redirect()->route('users.index')->with('success', 'Usuario eliminado correctamente');
+    }
+
+    public function usersDatatables()
+    {
+        return datatables()
+            ->eloquent(\App\Models\User::orderBy('rol', 'asc'))
+            ->addColumn('btn', 'user.actions')
+            ->rawColumns(['btn'])
+            ->toJson();
     }
 }

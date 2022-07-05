@@ -1,16 +1,10 @@
 <ul class="list-unstyled ps-0">
     <li class="mb-1">
         <a href="#" class="btn align-items-center rounded collapsed">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                class="bi bi-person-circle" viewBox="0 0 16 16">
-                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                <path fill-rule="evenodd"
-                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-            </svg>
-Nombre user auth....
+            <strong>Usuario</strong>: {{Auth::user()->name}}<br><strong>Rol</strong>: {{Auth::user()->rol}}
         </a>
     </li>
-
+    @if (Auth::user()->rol == 'Administrador')
     <li class="mb-1">
         <a href="{{ route('emails.index') }}" class="btn align-items-center rounded collapsed">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -21,7 +15,6 @@ Nombre user auth....
             Buzón
         </a>
     </li>
-   
     <li class="mb-1">
         <a href="{{ route('areas.index') }}" class="btn align-items-center rounded collapsed">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list"
@@ -35,7 +28,7 @@ Nombre user auth....
         </a>
     </li>
     <li class="mb-1">
-        <a href="{{ route('usuarios.index') }}" class="btn align-items-center rounded collapsed">
+        <a href="{{ route('users.index') }}" class="btn align-items-center rounded collapsed">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person"
                 viewBox="0 0 16 16">
                 <path
@@ -44,6 +37,38 @@ Nombre user auth....
             Usuarios
         </a>
     </li>
-  
-
+    <li class="mb-1">
+        <a href="{{ route('salir') }}" class="btn align-items-center rounded collapsed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-door-closed"
+                viewBox="0 0 16 16">
+                <path
+                    d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z" />
+                <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
+            </svg>
+            Cerrar Sesión
+        </a>
+    </li>
+    @elseif(Auth::user()->rol == 'Prestador')
+    <li class="mb-1">
+        <a href="{{ route('emails.index') }}" class="btn align-items-center rounded collapsed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-file-earmark" viewBox="0 0 16 16">
+                <path
+                    d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z" />
+            </svg>
+            Buzón
+        </a>
+    </li>
+    <li class="mb-1">
+        <a href="{{ route('salir') }}" class="btn align-items-center rounded collapsed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-door-closed"
+                viewBox="0 0 16 16">
+                <path
+                    d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2zm1 13h8V2H4v13z" />
+                <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z" />
+            </svg>
+            Cerrar Sesión
+        </a>
+    </li>
+    @endif
 </ul>

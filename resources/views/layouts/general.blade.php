@@ -13,6 +13,7 @@
     <link href="{{asset('assets/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="{{asset('assets/dist/css/css_dashboard/dashboard.css')}}">
+    <link rel="icon" type="image/x-icon" href="{{asset('assets/img/favicon_chiapas.png')}}">
     @stack('css')
 </head>
 

@@ -3,25 +3,34 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BuzonController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\AutenticarController;
 use App\Http\Controllers\UsuarioController;
 
 
 // Ruta principal, redirige al formulario
 Route::get('/', [BuzonController::class, 'create'])->name('welcome');
 
-// Ruta desglozada tipo recurso para las acciones CRUD del buzón 
-Route::get('buzon',[BuzonController::class, 'index'])->name('emails.index');
+// Rutas desglozadas tipo recurso para las acciones CRUD del buzón 
+Route::get('buzon',[BuzonController::class, 'index'])->name('emails.index')->middleware('auth');
 Route::get('formulario', [BuzonController::class, 'create'])->name('emails.create');
 Route::post('send', [BuzonController::class, 'send'])->name('emails.send');
-Route::get('buzon/{id}',[BuzonController::class, 'show'])->name('emails.show');
+Route::get('buzon/{id}',[BuzonController::class, 'show'])->name('emails.show')->middleware('auth');
 Route::put('buzon/{id}',[BuzonController::class, 'update'])->name('emails.update');
 Route::delete('buzon/{id}',[BuzonController::class, 'destroy'])->name('emails.destroy');
 
 // Ruta tipo recurso para Areas
-Route::resource('areas', AreaController::class)->names('areas');
-
-// Ruta tipo recurso para Usuarios
-Route::resource('usuarios', UsuarioController::class)->names('usuarios');
+Route::resource('areas', AreaController::class)->names('areas')->middleware('admin');
 
 // Ruta con ajax para obtener toda la data con datatables
 Route::get('buzon-data', [BuzonController::class, 'buzonDatatables'])->name('buzon-data');
+
+/* Rutas para iniciar sesión y cerrar sesión */
+Route::get('inicia-sesion', [AutenticarController::class, 'credenciales'])->name('login');
+Route::post('validar', [AutenticarController::class, 'autenticar'])->name('validar');
+Route::get('salir', [AutenticarController::class, 'salida'])->name('salir');
+
+// Ruta recurso para crud users
+Route::resource('users', UsuarioController::class)->names('users')->middleware('admin');
+
+// Ruta con ajax para obtener toda la data de usuarios con datatables
+Route::get('users-data', [UsuarioController::class, 'usersDatatables'])->name('users-data');
