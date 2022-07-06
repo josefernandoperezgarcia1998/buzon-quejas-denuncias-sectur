@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BuzonController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AutenticarController;
+use App\Http\Controllers\BuzonLogController;
+use App\Http\Controllers\UserLogsController;
 use App\Http\Controllers\UsuarioController;
 
 
@@ -34,3 +36,15 @@ Route::resource('users', UsuarioController::class)->names('users')->middleware('
 
 // Ruta con ajax para obtener toda la data de usuarios con datatables
 Route::get('users-data', [UsuarioController::class, 'usersDatatables'])->name('users-data');
+
+// Ruta resource para los user-logs
+Route::resource('user-logs', UserLogsController::class)->names('user-logs');
+
+// Ruta con ajax para obtener toda la data de user-logs con datatables
+Route::get('user-logs-data', [UserLogsController::class, 'userLogsDatatables'])->name('user-logs-data');
+
+// Ruta resource para el buzon-logs
+Route::resource('buzon-logs', BuzonLogController::class)->names('buzon-logs');
+
+// Ruta con ajax para obtener toda la data de user-logs con datatables
+Route::get('buzon-logs-data', [BuzonLogController::class, 'buzonLogsDatatables'])->name('buzon-logs-data');

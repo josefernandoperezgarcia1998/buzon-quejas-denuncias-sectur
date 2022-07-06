@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Buzon;
+use App\Models\User;
+use App\Models\UserCrudLog;
+use App\Observers\BuzonObserver;
+use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        User::observe(UserObserver::class);
+        Buzon::observe(BuzonObserver::class);
     }
 }
