@@ -99,4 +99,14 @@ class AreaController extends Controller
             return redirect()->route('areas.index')->with('error',$e->getMessage());
         }
     }
+
+    public function areasDatatables()
+    {
+        return datatables()
+            ->eloquent(\App\Models\Area::orderBy('nombre', 'asc'))
+            ->addColumn('btn', 'areas.actions')
+            ->rawColumns(['btn'])
+            ->toJson();
+    }
+
 }

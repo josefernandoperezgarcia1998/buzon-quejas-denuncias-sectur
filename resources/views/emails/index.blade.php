@@ -146,7 +146,25 @@ $(document).ready(function () {
             {data: 'folio'},
             {data: 'nombre'},
             {data: 'email'},
-            {data: 'estado'},
+            {data: 'estado',
+            // Cambiando el color deel estado dependiendo la opción
+            render: function (data, type, row) {
+                        if (data === "no_atendido") {
+                            return '<i class="far fa-dot-circle" style="background-color:#EFF12D; color:black;" /*aria-hidden="true"*/>No atendido</i>';
+                        }
+                        if (data === 'atendido') {
+                            return '<i class="far fa-dot-circle" style="background-color:#9B9BF9; color:black;" /*aria-hidden="true"*/>Atendido</i>';
+                        }
+                        if (data === 'concluido') {
+                            return '<i class="far fa-dot-circle" style="background-color:#B9F99B; color:black;" /*aria-hidden="true"*/>Concluido</i>';
+                        }
+                        if (data === 'cancelado') {
+                            return '<i class="far fa-dot-circle" style="background-color:#F22424; color:white;" /*aria-hidden="true"*/>Cancelado</i>';
+                        }
+                        return '<i class="far fa-dot-circle" style="color:red" /*aria-hidden="true"*/></i>';
+                    }
+
+        },
             {data: 'btn'},
         ],
         responsive: true,

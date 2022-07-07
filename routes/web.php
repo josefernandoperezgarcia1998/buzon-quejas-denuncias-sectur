@@ -23,6 +23,9 @@ Route::delete('buzon/{id}',[BuzonController::class, 'destroy'])->name('emails.de
 // Ruta tipo recurso para Areas
 Route::resource('areas', AreaController::class)->names('areas')->middleware('admin');
 
+// Ruta con ajax para obtener toda la data de user-logs con datatables
+Route::get('areas-logs-data', [AreaController::class, 'areasDatatables'])->name('areas-logs-data');
+
 // Ruta con ajax para obtener toda la data con datatables
 Route::get('buzon-data', [BuzonController::class, 'buzonDatatables'])->name('buzon-data');
 
