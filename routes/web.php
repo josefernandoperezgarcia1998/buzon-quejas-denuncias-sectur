@@ -51,3 +51,6 @@ Route::resource('buzon-logs', BuzonLogController::class)->names('buzon-logs');
 
 // Ruta con ajax para obtener toda la data de user-logs con datatables
 Route::get('buzon-logs-data', [BuzonLogController::class, 'buzonLogsDatatables'])->name('buzon-logs-data');
+
+//Ruta para poder desargar el listado de excel de todos mensajes del buzón
+Route::get('buzon-excel', [BuzonController::class, 'buzonExportExcel'])->name(('buzon-excel'));

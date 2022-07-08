@@ -23,6 +23,7 @@
                     </form>
                 </div>
             </div> --}}
+            <a href="{{route('buzon-excel')}}" class="btn btn-success btn-sm">Descargar excel</a>
         </div>
     </div>
     <div class="card-body">

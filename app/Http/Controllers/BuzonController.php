@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buzon;
-use App\Models\Area;
 use App\Mail\BuzonMailable;
-use App\Mail\DenuncianteMailable;
 use Illuminate\Http\Request;
+use App\Exports\BuzonsExport;
+use App\Mail\DenuncianteMailable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class BuzonController extends Controller
 {
@@ -167,5 +169,11 @@ class BuzonController extends Controller
         ->addColumn('btn', 'emails.actions')
         ->rawColumns(['btn'])
         ->toJson();
+    }
+
+    // Función para poder exportar datos del buzón por excel
+    public function buzonExportExcel()
+    {
+        return Excel::download(new BuzonsExport, 'buzon-lista.xlsx');
     }
 }
